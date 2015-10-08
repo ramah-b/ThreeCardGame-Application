@@ -1,17 +1,23 @@
 package threeCardGamePackage;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class ThreeCardsGame {
 
 	private int selectedCard; // stores where the ace card is
-	private double cashMoney;
-	private double betAmount;
-
+	private double cashMoney; //user's wallet of how much money he/she has
+	private ArrayList<Double> betAmount = new ArrayList<Double>(); 
+	private ArrayList<String> guessedCard = new ArrayList<String>();
+	private static int playCounter;
+	private double currentBetAmount; 
+ 
 	public ThreeCardsGame() {
 		this.selectedCard = 0;
-		this.cashMoney = 100;
-		this.betAmount = 0;
+		this.cashMoney = 0;
+		ThreeCardsGame.playCounter = 0;
+		currentBetAmount = 0;
 	}
 
 	public int getSelectedCard() {
@@ -30,12 +36,12 @@ public class ThreeCardsGame {
 		this.cashMoney = cashMoney;
 	}
 
-	public double getBetAmount() {
-		return betAmount;
+	public double getPlayCounter() {
+		return playCounter;
 	}
 
-	public void setBetAmount(double betAmount) {
-		this.betAmount = betAmount;
+	public static void setPlayCounter() {
+		playCounter++;
 	}
 
 	// shuffle the cards: draws a random number (1-3) and sets it to the
@@ -51,48 +57,55 @@ public class ThreeCardsGame {
 
 	public boolean updateBetAmount(double betAmount) {
 
-		if (this.cashMoney < betAmount || this.betAmount >= 500)
+		//saves the user's betAmount and checks if the user has sufficient money in his wallet
+		if (this.cashMoney < betAmount)
 			return false;
 		else {
-			this.betAmount += betAmount;
+			this.currentBetAmount = betAmount;
+			this.betAmount.add(playCounter, betAmount);
 			this.cashMoney -= betAmount;
+			
 			return true;
 		}
 	}
 
 	// prints out the simulated graphics
-	public void layCards() {
+	public String layCards() {
 
-		System.out.println("Which one is the ace?\n\n");
-		String str = String.format("%s %s %s %s", "\t", "##", "##", "##");
+		String finalStr, str; 
+		finalStr = "Which one is the ace?\n\n";
+		str = String.format("%s %s %s %s", "\t", "##", "##", "##");
 
-		System.out.println(str);
-		System.out.println(str);
+		finalStr+= (str + "\n" + str + "\n");
+	
 
-		System.out.printf("%s %s %s %s", "\t", "1 ", "2 ", "3 ");
-		System.out.println("\n\n");
+		str = String.format("%s %s %s %s", "\t", "1 ", "2 ", "3 ");
+		finalStr += (str + "\n\n");
 
+		return finalStr;
 	}
 
-	// checks if the user guessed correctly
-	public void checkUserPick(int userChoice) {
+	//saves the user's guess and checks if the user guessed correctly
+	public String checkUserPick(Integer userChoice) {
 
+		this.guessedCard.add(playCounter, userChoice.toString());
+		ThreeCardsGame.setPlayCounter();
+		
+		String resultStr; 
 		if (userChoice == this.getSelectedCard()) {
-			System.out
-					.println("You nailed it! Fast Eddie reluctantly hands over your winnings, scowling.");
-			this.showCards(getSelectedCard());
+			this.cashMoney += currentBetAmount; 
+		 resultStr = "You nailed it! Fast Eddie reluctantly hands over your winnings, scowling.\n\n" + this.showCards(getSelectedCard());
 		} else {
-			System.out
-					.println("Ha! Fast Eddie wins again! The ace was card number "
-							+ this.getSelectedCard() + ".");
-			this.showCards(getSelectedCard());
+			 resultStr = "Ha! Fast Eddie wins again! The ace was card number "
+							+ this.getSelectedCard() + ".\n\n" + this.showCards(getSelectedCard());
 		}
+		return resultStr;
 	}
 
 	// prints out the simulated graphics after the user's guess
-	public void showCards(int userChoice) {
+	public String showCards(int userChoice) {
 
-		String str;
+		String finalStr, str;
 
 		if (userChoice == 1)
 			str = String.format("%s %s %s %s", "\t", "AA", "##", "##");
@@ -101,11 +114,29 @@ public class ThreeCardsGame {
 		else
 			str = String.format("%s %s %s %s", "\t", "##", "##", "AA");
 
-		System.out.println(str);
-		System.out.println(str);
-		System.out.printf("%s %s %s %s", "\t", "1 ", "2 ", "3 ");
-		System.out.println("\n\n");
+		finalStr = str + "\n" + str +"\n";
+		
+		str= String.format("%s %s %s %s", "\t", "1 ", "2 ", "3 ");
+		finalStr += str + "\n\n";
+		
+		return finalStr;
 
 	}
 
+	public String printHistory(){
+		String historyStr;
+		NumberFormat currency = NumberFormat.getCurrencyInstance();
+		
+		historyStr = "This is your Game History\n";
+		
+		for (int i= 0; i < this.getPlayCounter(); i++){
+			historyStr += "Round# " + (i+1) + "\n";
+			historyStr += "Bet " + currency.format(this.betAmount.get(i)) + "\n";
+			historyStr += "Guessed Card " + this.guessedCard.get(i) + "\n";
+			historyStr += "-------------------------\n\n";
+			
+		}
+		historyStr += "You have " + currency.format(this.cashMoney) + " in your wallet.";
+		return historyStr;
+	}
 }
