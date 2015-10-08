@@ -7,7 +7,7 @@ import java.util.Random;
 public class ThreeCardsGame {
 
 	private int selectedCard; // stores where the ace card is
-	private double cashMoney; //user's wallet of how much money he/she has
+	private double userWallet; //user's wallet of how much money he/she has
 	private ArrayList<Double> betAmount = new ArrayList<Double>(); 
 	private ArrayList<String> guessedCard = new ArrayList<String>();
 	private static int playCounter;
@@ -15,7 +15,7 @@ public class ThreeCardsGame {
  
 	public ThreeCardsGame() {
 		this.selectedCard = 0;
-		this.cashMoney = 0;
+		this.userWallet = 0;
 		ThreeCardsGame.playCounter = 0;
 		currentBetAmount = 0;
 	}
@@ -29,11 +29,11 @@ public class ThreeCardsGame {
 	}
 
 	public double getCashMoney() {
-		return cashMoney;
+		return userWallet;
 	}
 
 	public void setCashMoney(double cashMoney) {
-		this.cashMoney = cashMoney;
+		this.userWallet = cashMoney;
 	}
 
 	public double getPlayCounter() {
@@ -55,16 +55,14 @@ public class ThreeCardsGame {
 		this.setSelectedCard(newCard);
 	}
 
-	public boolean updateBetAmount(double betAmount) {
+	public boolean updateCurrentBetAmount(double betAmount) {
 
 		//saves the user's betAmount and checks if the user has sufficient money in his wallet
-		if (this.cashMoney < betAmount)
+		if (this.userWallet < betAmount)
 			return false;
 		else {
 			this.currentBetAmount = betAmount;
 			this.betAmount.add(playCounter, betAmount);
-			this.cashMoney -= betAmount;
-			
 			return true;
 		}
 	}
@@ -86,16 +84,17 @@ public class ThreeCardsGame {
 	}
 
 	//saves the user's guess and checks if the user guessed correctly
-	public String checkUserPick(Integer userChoice) {
+	public String checkUserGuess(Integer userChoice) {
 
 		this.guessedCard.add(playCounter, userChoice.toString());
 		ThreeCardsGame.setPlayCounter();
 		
 		String resultStr; 
 		if (userChoice == this.getSelectedCard()) {
-			this.cashMoney += currentBetAmount; 
+			this.userWallet += currentBetAmount; 
 		 resultStr = "You nailed it! Fast Eddie reluctantly hands over your winnings, scowling.\n\n" + this.showCards(getSelectedCard());
 		} else {
+			this.userWallet -= currentBetAmount;
 			 resultStr = "Ha! Fast Eddie wins again! The ace was card number "
 							+ this.getSelectedCard() + ".\n\n" + this.showCards(getSelectedCard());
 		}
@@ -136,7 +135,7 @@ public class ThreeCardsGame {
 			historyStr += "-------------------------\n\n";
 			
 		}
-		historyStr += "You have " + currency.format(this.cashMoney) + " in your wallet.";
+		historyStr += "You have " + currency.format(this.userWallet) + " in your wallet.";
 		return historyStr;
 	}
 }

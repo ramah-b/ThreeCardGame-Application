@@ -21,11 +21,10 @@ public class ThreeCardGameApp {
 		// create an object of to start the game
 		ThreeCardsGame newGame = new ThreeCardsGame();
 
-		
 		System.out.print("How much money do you have for this game? ");
 		newGame.setCashMoney(keyboard.nextInt());
 		System.out.println();
-		
+
 		// reads the user's bet amount and make sure it is !< 5
 		do {
 			System.out
@@ -39,7 +38,7 @@ public class ThreeCardGameApp {
 			// check that the user actually has a sufficient amount in his
 			// wallet to make this bet and start the game (shuffle cards and lay
 			// them out
-			if (newGame.updateBetAmount(betAmount)) {
+			if (newGame.updateCurrentBetAmount(betAmount)) {
 				newGame.shuffleCards();
 				System.out.println(newGame.layCards());
 
@@ -53,7 +52,7 @@ public class ThreeCardGameApp {
 				System.out.println("\n");
 
 				// check the user's guess and print out the result
-				System.out.println(newGame.checkUserPick(userChoice));
+				System.out.println(newGame.checkUserGuess(userChoice));
 
 				// asks if the user want to keep guessing
 				System.out.print("quit ('y' or 'n')? ");
@@ -62,13 +61,15 @@ public class ThreeCardGameApp {
 			// if the user has insufficient amount then end the game
 			else {
 				System.out
-						.println("You don't have enough money in you wallet.\nYou are not allowed to bet or play this game anymore.\nThe game is over!");
+						.println("You don't have enough money in you wallet.");
+				System.out
+						.println("You are not allowed to bet or play this game anymore.");
+				System.out.println("The game is over!");
+				System.out.println();
 				quitKeyword = "y";
 			}
 		} while (!quitKeyword.equals("y"));
 
-		
-		
 		System.out.println(newGame.printHistory());
 
 		keyboard.close();
