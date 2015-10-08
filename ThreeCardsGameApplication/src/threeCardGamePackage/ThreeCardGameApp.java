@@ -22,7 +22,7 @@ public class ThreeCardGameApp {
 		ThreeCardsGame newGame = new ThreeCardsGame();
 
 		System.out.print("How much money do you have for this game? ");
-		newGame.setCashMoney(keyboard.nextInt());
+		newGame.setUserWallet(keyboard.nextInt());
 		System.out.println();
 
 		// reads the user's bet amount and make sure it is !< 5
@@ -54,6 +54,9 @@ public class ThreeCardGameApp {
 				// check the user's guess and print out the result
 				System.out.println(newGame.checkUserGuess(userChoice));
 
+				System.out.println("You have: " + newGame.getFormattedPrice(newGame.getUserWallet()));
+				System.out.println();
+				
 				// asks if the user want to keep guessing
 				System.out.print("quit ('y' or 'n')? ");
 				quitKeyword = keyboard.next().toLowerCase();
@@ -62,12 +65,12 @@ public class ThreeCardGameApp {
 			else {
 				System.out
 						.println("You don't have enough money in you wallet.");
-				System.out
-						.println("You are not allowed to bet or play this game anymore.");
-				System.out.println("The game is over!");
+				System.out.println("You have: " + newGame.getFormattedPrice(newGame.getUserWallet()));
 				System.out.println();
-				quitKeyword = "y";
+				System.out.print("quit ('y' or 'n')? ");
+				quitKeyword = keyboard.next().toLowerCase();
 			}
+			System.out.println();
 		} while (!quitKeyword.equals("y"));
 
 		System.out.println(newGame.printHistory());

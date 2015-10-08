@@ -28,12 +28,12 @@ public class ThreeCardsGame {
 		this.selectedCard = selectedCard;
 	}
 
-	public double getCashMoney() {
+	public double getUserWallet() {
 		return userWallet;
 	}
 
-	public void setCashMoney(double cashMoney) {
-		this.userWallet = cashMoney;
+	public void setUserWallet(double amount) {
+		this.userWallet = amount;
 	}
 
 	public double getPlayCounter() {
@@ -124,18 +124,23 @@ public class ThreeCardsGame {
 
 	public String printHistory(){
 		String historyStr;
-		NumberFormat currency = NumberFormat.getCurrencyInstance();
+		
 		
 		historyStr = "This is your Game History\n";
 		
 		for (int i= 0; i < this.getPlayCounter(); i++){
 			historyStr += "Round# " + (i+1) + "\n";
-			historyStr += "Bet " + currency.format(this.betAmount.get(i)) + "\n";
+			historyStr += "Bet " + this.getFormattedPrice(this.betAmount.get(i)) + "\n";
 			historyStr += "Guessed Card " + this.guessedCard.get(i) + "\n";
 			historyStr += "-------------------------\n\n";
 			
 		}
-		historyStr += "You have " + currency.format(this.userWallet) + " in your wallet.";
+		historyStr += "You have " + this.getFormattedPrice(this.userWallet) + " in your wallet.";
 		return historyStr;
+	}
+	
+	public String getFormattedPrice(double amount){
+		NumberFormat currency = NumberFormat.getCurrencyInstance();
+		return currency.format(amount);
 	}
 }
